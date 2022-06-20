@@ -162,7 +162,6 @@ equalDOF 13 53 1;
 
 set totalBuildingMass 0
 # Assign Mass ------
-## Mass maybe not exactly correct but the frequency is correct so.....
 for {set floor 1} {$floor <= $NStory} {incr floor} {
         if {$floor <= 2 } {
             set massUsed [expr 1.195875000000000e+05*$kg*$g];
