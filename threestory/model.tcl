@@ -39,7 +39,7 @@ set MPa [expr $N/pow($mm,2)]
 
 set g [expr 9.81*$meter/pow($sec,2)]; 	# gravitational acceleration
 set PI [expr 2*asin(1.0)]; 	
-set kg [expr 1/$g]; # This is Kilogram Force
+set kg [expr 1*$sec/pow($meter,2)]
 
 set LCol [expr 13*$ft];
 set LBeam [expr 30*$ft];
