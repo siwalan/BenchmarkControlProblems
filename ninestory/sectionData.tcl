@@ -150,7 +150,7 @@ Wsection  10 1 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf
 
 ##### W24x68
 set d [expr 23.7*$in];	# depth
-set tw [expr 0.395*$in];	# web thickness
+set tw [expr 0.415*$in];	# web thickness
 set bf [expr 8.97*$in];	# flange width
 set tf [expr 0.585*$in];	# flange thickness
 Wsection  11 1 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
