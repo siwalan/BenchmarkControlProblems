@@ -22,7 +22,7 @@ T5 = 0.09941529284564488s ; F5 = 10.058814608660155 hz;
 T6 = 0.09053790203823787s ; F6 = 11.045097991973117 hz;
 
 ## 9 Story Building Eigenvalues
-From Ohtori Paper, the first 3 Natural Period is 0.443, 1.18, 2.05, 3.09, and 4.27 Hz.
+From Ohtori Paper, the first 5 Natural Period is 0.443, 1.18, 2.05, 3.09, and 4.27 Hz.
 
 OpenSees Eigenvalues:
 
