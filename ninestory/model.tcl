@@ -98,7 +98,7 @@ set transformationKey 1
 set intPoint 5
 
 
-set colListExterior {2 2 3 3 1 1 4 4 5 5}
+set colListExterior {1 1 1 1 4 4 5 5 6 6}
 set ColumnExteriorLine {1 6}
 foreach colLine $ColumnExteriorLine {
     for {set floor 0} {$floor <= [expr $NStory]} {incr floor} {
@@ -123,7 +123,6 @@ foreach colLine $ColumnExteriorLine {
         }
 }
 
-#set colListInterior {1 1 1 1 4 4 5 5 6 6}
 set colListInterior {2 2 3 3 1 1 4 4 5 5}
 
 set ColumnInteriorLine {2 3 4 5}
