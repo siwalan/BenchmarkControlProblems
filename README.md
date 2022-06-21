@@ -6,6 +6,7 @@ Ohtori Nonlinear Benchmark Control Problem are based on SAC Phase II Building De
 
 ## 3 Story Building Eigenvalues
 From Ohtori Paper, the first 3 Natural Period is : 0.99, 3.06, and 5.83 Hz
+
 Eigenvalues:
 T1 = 1.0097077067198548 s; F1 = 0.9903856267955097 hz;
 T2 = 0.32667497129029194 s; F2 = 3.0611466683542576 hz;
