@@ -185,15 +185,16 @@ foreach massAssignment $massFloor {
         } else {
             set floorCode $floor
         }
-
         for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
             if {$Columns == 1 || $Columns == 6} {
-                mass $Columns$floorCode [expr $massAssignment/2] [expr $massAssignment/2]  0
-                puts stdout "Mass at $Columns$floorCode defined as [expr $massAssignment/2]"
+                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
+                mass $Columns$floorCode [expr $massAssignment/2] [expr $massAssignment/2]  $rotationalMass
+                puts stdout "Mass at $Columns$floorCode defined as $massAssignment with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment]
             } else {
-                mass $Columns$floorCode [expr $massAssignment]  $massAssignment  0
-                puts stdout "Mass at $Columns$floorCode defined as $massAssignment"
+                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(210)]
+                mass $Columns$floorCode [expr $massAssignment]  $massAssignment  $rotationalMass
+                puts stdout "Mass at $Columns$floorCode defined as $massAssignment with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment*2]
             }
 
