@@ -67,12 +67,13 @@ for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
             } else {
                 set floorCode $floor
             }
-    fix $Columns$floorCode 1 1 1
+    fix $Columns$floorCode 1 1 0
     puts stdout "Node $Columns$floor is fixed"
 }
 
 fix 101 1 0 0
 fix 601 1 0 0
+
 # Define Material
 set Fy [expr 345*$MPa]
 set Es [expr 204000*$MPa];		# Steel Young's Modulus
@@ -90,15 +91,14 @@ uniaxialMaterial Steel01  $matIDhard $Fy $Es $hardening
 
 source [file join [file dirname [info script]] "sectionData.tcl"]
 
-set colListExterior {1 1 1 1 4 4 5 5 6 6}
-set colListInterior {2 2 3 3 1 1 4 4 5 5}
-
 geomTransf Linear 1
 geomTransf PDelta 2
 
 set transformationKey 1
 set intPoint 5
 
+
+set colListExterior {2 2 3 3 1 1 4 4 5 5}
 set ColumnExteriorLine {1 6}
 foreach colLine $ColumnExteriorLine {
     for {set floor 0} {$floor <= [expr $NStory]} {incr floor} {
@@ -122,6 +122,9 @@ foreach colLine $ColumnExteriorLine {
         puts "Creating Column with Section $section at node $colLine$nodeI  to $colLine$nodeJ"
         }
 }
+
+#set colListInterior {1 1 1 1 4 4 5 5 6 6}
+set colListInterior {2 2 3 3 1 1 4 4 5 5}
 
 set ColumnInteriorLine {2 3 4 5}
 foreach colLine $ColumnInteriorLine {
@@ -151,12 +154,14 @@ foreach colLine $ColumnInteriorLine {
 set beamList {7 7 7 8 8 8 8 9 10 11}
 set floor 1
 foreach beamSection $beamList {
-        if {$floor < 10} {
+
+    if {$floor < 10} {
         set floorCode "0$floor"
-        } else {
+    } else {
         set floorCode $floor
-        }
+    }
         set floorCodeJ $floorCode
+
     for {set Columns 1 } {$Columns <= $NBay} {incr Columns} {
         set section  $beamSection
         set nodeI $Columns
