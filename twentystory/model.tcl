@@ -168,13 +168,13 @@ foreach beamSection $beamList {
     set floor [expr $floor + 1]
 }
 
-set massFloorRaw {5.32 5.63 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.52 5.84}
+set massFloorRaw {5.31220 5.31220 5.63320 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.5164 5.83760}
 set massFloor []
 foreach  item $massFloorRaw {
     lappend massFloor [expr $item*$kg*pow(10,5)/(2*5)]
 }
 
-set floor 3
+set floor 1
 set totalBuildingMass 0
 foreach massAssignment $massFloor {
         if {$floor < 10} {
@@ -182,15 +182,16 @@ foreach massAssignment $massFloor {
         } else {
             set floorCode $floor
         }
+        puts "$floor $massAssignment"
         for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
             if {$Columns == 1 || $Columns == 6} {
                 set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
                 mass $Columns$floorCode [expr $massAssignment/2] [expr $massAssignment/2]  $rotationalMass
-                puts stdout "Mass at $Columns$floorCode defined as $massAssignment with Rotational Mass of $rotationalMass"
+                puts stdout "Mass at $Columns$floorCode defined as [expr $massAssignment/2] with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment]
             } else {
                 set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(210)]
-                mass $Columns$floorCode [expr $massAssignment]  $massAssignment  $rotationalMass
+                mass $Columns$floorCode $massAssignment  $massAssignment $rotationalMass
                 puts stdout "Mass at $Columns$floorCode defined as $massAssignment with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment*2]
             }
