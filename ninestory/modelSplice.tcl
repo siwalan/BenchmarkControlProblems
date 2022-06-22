@@ -108,6 +108,28 @@ foreach floorHeight $LCol {
     set iterator [expr $iterator + 1]
 }
 
+puts stdout "Create a Rigid Diaphragm "
+for {set floor 1} {$floor <= [expr $NStory+1]} {incr floor} {
+
+    if {$floor < 10} {
+        set floorCode "0$floor"
+    } else {
+        set floorCode $floor
+    }
+        set floorCodeJ $floorCode
+
+    for {set Columns 2 } {$Columns <= $NBay+1} {incr Columns} {
+        set nodeI 1
+        set nodeJ [expr $Columns]
+        if {$nodeJ == 6} {
+            set floorCodeJ $floorCode$pinConnection
+        }
+        equalDOF $nodeI$floorCode $nodeJ$floorCodeJ 1; 
+
+        puts "Rigid Diaphragm at node $nodeI$floorCode to $nodeJ$floorCodeJ"
+    }
+}
+
 puts stdout "Fixing Columns"
 for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
     set floor 0
