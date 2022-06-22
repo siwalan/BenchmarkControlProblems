@@ -125,32 +125,32 @@ set d [expr 36.0*$in];	# depth
 set tw [expr 0.650*$in];	# web thickness
 set bf [expr 12.0*$in];	# flange width
 set tf [expr 1.02*$in];	# flange thickness
-Wsection  7 1 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
+Wsection  7 2 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
 
 ##### W36x135
 set d [expr 35.6*$in];	# depth
 set tw [expr 0.60*$in];	# web thickness
 set bf [expr 12.0*$in];	# flange width
 set tf [expr 0.790*$in];	# flange thickness
-Wsection  8 1 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
+Wsection  8 2 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
 
 ##### W30x99
 set d [expr 29.7*$in];	# depth
 set tw [expr 0.520*$in];	# web thickness
 set bf [expr 10.5*$in];	# flange width
 set tf [expr 0.670*$in];	# flange thickness
-Wsection  9 1 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
+Wsection  9 2 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
 
 ##### W27x84
 set d [expr 26.7*$in];	# depth
 set tw [expr 0.460*$in];	# web thickness
 set bf [expr 10.0*$in];	# flange width
 set tf [expr 0.640*$in];	# flange thickness
-Wsection  10 1 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
+Wsection  10 2 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
 
 ##### W24x68
 set d [expr 23.7*$in];	# depth
 set tw [expr 0.415*$in];	# web thickness
 set bf [expr 8.97*$in];	# flange width
 set tf [expr 0.585*$in];	# flange thickness
-Wsection  11 1 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
+Wsection  11 2 $d $bf $tf $tw $nfdw $nftw $nfbf $nftf 
