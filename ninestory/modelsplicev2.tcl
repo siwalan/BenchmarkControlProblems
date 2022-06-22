@@ -112,6 +112,31 @@ foreach floorHeight $LCol {
     set iterator [expr $iterator + 1]
 }
 
+puts stdout "Create a Rigid Diaphragm "
+for {set floor 1} {$floor <= [expr $NStory+1]} {incr floor} {
+
+    if {$floor < 10} {
+        set floorCode "0$floor"
+    } else {
+        set floorCode $floor
+    }
+        set floorCodeJ $floorCode
+
+    for {set Columns 2 } {$Columns <= $NBay+1} {incr Columns} {
+        set nodeI 1
+        set nodeJ [expr $Columns]
+        if {$nodeJ == 6} {
+            set floorCodeJ $floorCode$pinConnection
+        }  else {
+            set floorCodeJ $floorCode$regularFloor
+        }
+        equalDOF $nodeI$floorCode$regularFloor $nodeJ$floorCodeJ 1; 
+
+        puts "Rigid Diaphragm at node $nodeI$floorCode$regularFloor to $nodeJ$floorCodeJ"
+    }
+}
+
+
 puts stdout "Fixing Columns"
 for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
     set floor 00
@@ -125,7 +150,7 @@ fix 6010 1 0 0
 
 # Define Material
 set Fy [expr 345*$MPa]
-set Es [expr 204000*$MPa];		# Steel Young's Modulus
+set Es [expr 204*$GPa];		# Steel Young's Modulus
 set hardening 0.01
 set matIDhard 1
 uniaxialMaterial Steel01  $matIDhard $Fy $Es $hardening
