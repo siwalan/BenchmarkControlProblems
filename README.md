@@ -9,7 +9,7 @@ From Ohtori Paper, the first 3 Natural Period is : 0.99, 3.06, and 5.83 Hz
 
 OpenSees Eigenvalues:
 | Mode | Period (s) | Frequency (Hz) | Frequency (rounded, Hz) | Ohtori Frequency (rounded, Hz) |
-|------| -------|-----------| ----|
+|------| -------|-----------| ----| -- |
 |1     |1.0097077067198548 | 0.9903856267955097| 0.99 | 0.99 |
 |2     |0.32667497129029194 | 3.0611466683542576| 3.061| 3.056 |
 |3     | 0.17080331473344545| 5.854687314239736  | 5.855 | 5.827 |
