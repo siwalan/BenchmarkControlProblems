@@ -29,6 +29,59 @@ for {set floor 0} {$floor <= [expr $NStory+1]} {incr floor} {
     }
 
 
+puts stdout "Creating a Pin Connection Node"
+set currentHeight [expr 12.0]
+set floor [expr 1]
+set pinConnection 0
+
+if {$floor < 10} {
+    set floorCode "0$floor"
+} else {
+    set floorCode $floor
+}
+
+for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
+    if {$Columns == 1} {
+        set pinConnection 0
+        node $Columns$floorCode$pinConnection [expr ($Columns-1)*$LBeam] [expr $currentHeight]
+        puts stdout "Node $Columns$floorCode$pinConnection created. X Coordinate [expr ($Columns-1)*$LBeam] Y Coordinate [expr ($currentHeight)]"
+    } elseif {$Columns == 6} {
+        set pinConnection 1
+        node $Columns$floorCode$pinConnection [expr ($Columns-1)*$LBeam] [expr $currentHeight]
+
+        puts stdout "Node $Columns$floorCode$pinConnection created. X Coordinate [expr ($Columns-1)*$LBeam] Y Coordinate [expr ($currentHeight)]"
+    } else {
+        set pinConnection 0
+        node $Columns$floorCode$pinConnection [expr ($Columns-1)*$LBeam] [expr $currentHeight]
+        puts stdout "Node $Columns$floorCode$pinConnection created. X Coordinate [expr ($Columns-1)*$LBeam] Y Coordinate [expr ($currentHeight)]"
+
+        set pinConnection 1
+        node $Columns$floorCode$pinConnection [expr ($Columns-1)*$LBeam] [expr $currentHeight]
+        puts stdout "Node $Columns$floorCode$pinConnection created. X Coordinate [expr ($Columns-1)*$LBeam] Y Coordinate [expr ($currentHeight)]"
+    }
+}
+
+puts stdout "Constraint a Pinned DOF"
+for {set Columns 1} {$Columns <= $NBay+1} {incr Columns} {
+    if {$Columns == 1} {
+        set pinConnection 0
+        equalDOF $Columns$floorCode $Columns$floorCode$pinConnection 1 2
+        puts stdout "Node $Columns$floorCode and $Columns$floorCode$pinConnection is pinned"
+    } elseif {$Columns == 6} {
+        set pinConnection 1
+        equalDOF $Columns$floorCode $Columns$floorCode$pinConnection 1 2
+        puts stdout "Node $Columns$floorCode and $Columns$floorCode$pinConnection is pinned"
+    } else {
+        set pinConnection 0
+        equalDOF $Columns$floorCode $Columns$floorCode$pinConnection 1 2
+        puts stdout "Node $Columns$floorCode and $Columns$floorCode$pinConnection is pinned"
+
+        set pinConnection 1
+        equalDOF $Columns$floorCode $Columns$floorCode$pinConnection 1 2
+        puts stdout "Node $Columns$floorCode and $Columns$floorCode$pinConnection is pinned"
+    }
+}
+
 puts stdout "Create a Rigid Diaphragm "
 for {set floor 1} {$floor <= [expr $NStory+1]} {incr floor} {
 
@@ -42,9 +95,13 @@ for {set floor 1} {$floor <= [expr $NStory+1]} {incr floor} {
     for {set Columns 2 } {$Columns <= $NBay+1} {incr Columns} {
         set nodeI 1
         set nodeJ [expr $Columns]
-        if {$nodeJ == 6} {
+
+        if {$floorCode == 01} {
+            set floorCodeJ $floorCode
+        }  else {
             set floorCodeJ $floorCode
         }
+
         equalDOF $nodeI$floorCode $nodeJ$floorCodeJ 1; 
 
         puts "Rigid Diaphragm at node $nodeI$floorCode to $nodeJ$floorCodeJ"
@@ -152,18 +209,33 @@ foreach beamSection $beamList {
     } else {
         set floorCode $floor
     }
-        set floorCodeJ $floorCode
 
     for {set Columns 1 } {$Columns <= $NBay} {incr Columns} {
         set section  $beamSection
         set nodeI $Columns
         set nodeJ [expr $nodeI + 1]
-        if {$nodeJ == 6} {
+        if {$floor == 1} {
+            if {$Columns == 1} {
+                set pinConnection 1
+                set floorCodeJ $floorCode$pinConnection
+
+                set pinConnection 0
+                set floorCodeI $floorCode$pinConnection
+
+            } else {
+                set pinConnection 1
+                set floorCodeJ $floorCode$pinConnection
+                set pinConnection 0
+                set floorCodeI $floorCode$pinConnection
+            } 
+        } else {
+            set floorCodeI $floorCode
             set floorCodeJ $floorCode
         }
-        element forceBeamColumn $nodeI$floorCode$nodeJ$floorCodeJ $nodeI$floorCode $nodeJ$floorCodeJ $transformationKey Lobatto $section $intPoint 
 
-        puts "Creating Beam with Section $section at node $nodeI$floorCode to $nodeJ$floorCodeJ"
+        element forceBeamColumn $nodeI$floorCodeI$nodeJ$floorCodeJ $nodeI$floorCodeI $nodeJ$floorCodeJ $transformationKey Lobatto $section $intPoint 
+
+        puts "Creating Beam with Section $section at node $nodeI$floorCodeI to $nodeJ$floorCodeJ"
     }
     set floor [expr $floor + 1]
 }
@@ -182,7 +254,6 @@ foreach massAssignment $massFloor {
         } else {
             set floorCode $floor
         }
-        puts "$floor $massAssignment"
         for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
             if {$Columns == 1 || $Columns == 6} {
                 set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
