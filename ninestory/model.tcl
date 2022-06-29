@@ -60,7 +60,7 @@ for {set floor 1} {$floor <= [expr $NStory+1]} {incr floor} {
     }
 
 puts stdout "Create a Rigid Diaphragm "
-for {set floor 1} {$floor <= [expr $NStory+1]} {incr floor} {
+for {set floor 2} {$floor <= [expr $NStory+1]} {incr floor} {
 
     if {$floor < 10} {
         set floorCode "0$floor"
@@ -69,7 +69,7 @@ for {set floor 1} {$floor <= [expr $NStory+1]} {incr floor} {
     }
         set floorCodeJ $floorCode
 
-    for {set Columns 2 } {$Columns <= $NBay+1} {incr Columns} {
+    for {set Columns 2 } {$Columns <= $NBay} {incr Columns} {
         set nodeI 1
         set nodeJ [expr $Columns]
         if {$nodeJ == 6} {
@@ -228,3 +228,15 @@ foreach massAssignment $massFloor {
         }
         set floor [expr $floor + 1]
 }
+
+puts "Total building mass is $totalBuildingMass"
+
+set massAssignment [lindex $massFloor 1]
+set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(210)]
+mass 200 0 0  $rotationalMass
+mass 300 0 0  $rotationalMass
+mass 400 0 0  $rotationalMass
+mass 500 0 0  $rotationalMass
+set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
+mass 100 0 0  $rotationalMass
+mass 600 0 0  $rotationalMass
