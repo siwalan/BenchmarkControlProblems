@@ -166,6 +166,13 @@ foreach beamSection $beamList {
     set floor [expr $floor + 1]
 }
 
+set massFloorRaw {9.65 10.1 9.89 9.89 9.89 9.89 9.89 9.89 9.89 10.7}
+set massFloor []
+foreach  item $massFloorRaw {
+    lappend massFloor [expr $item*$kg*pow(10,5)/(2*5)]
+}
+
+
 if {[string equal $LunitTXT "mm"]} {
     set alpha [expr pow(10,-12)]
 } elseif {[string equal $LunitTXT "meter"]} {
