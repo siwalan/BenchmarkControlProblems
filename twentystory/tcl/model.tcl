@@ -178,6 +178,14 @@ foreach  item $massFloorRaw {
 
 set floor 1
 set totalBuildingMass 0
+
+if {[string equal $LunitTXT "mm"]} {
+    set alpha [expr pow(10,-12)]
+} elseif {[string equal $LunitTXT "meter"]} {
+    set alpha [expr pow(10,-6)]
+}
+
+
 foreach massAssignment $massFloor {
         if {$floor < 10} {
             set floorCode "0$floor"
@@ -186,12 +194,12 @@ foreach massAssignment $massFloor {
         }
         for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
             if {$Columns == 1 || $Columns == 6} {
-                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
+                set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(2*210)]
                 mass $Columns$floorCode [expr $massAssignment/2] [expr $massAssignment/2]  $rotationalMass
                 #puts stdout "Mass at $Columns$floorCode defined as [expr $massAssignment/2] with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment]
             } else {
-                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(210)]
+                set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(210)]
                 mass $Columns$floorCode $massAssignment  $massAssignment $rotationalMass
                 #puts stdout "Mass at $Columns$floorCode defined as $massAssignment with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment*2]
@@ -203,14 +211,15 @@ foreach massAssignment $massFloor {
 #puts "Total building mass is $totalBuildingMass"
 
 set massAssignment [lindex $massFloor 1]
-set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(210)]
+set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(210)]
 mass 200 0 0  $rotationalMass
 mass 300 0 0  $rotationalMass
 mass 400 0 0  $rotationalMass
 mass 500 0 0  $rotationalMass
-set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
+set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(2*210)]
 mass 100 0 0  $rotationalMass
 mass 600 0 0  $rotationalMass
+
 
 
 # RAYLEIGH damping parameters, Where to put M/K-prop damping, switches (http://opensees.berkeley.edu/OpenSees/manuals/usermanual/1099.htm)

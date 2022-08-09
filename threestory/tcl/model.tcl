@@ -107,31 +107,43 @@ equalDOF 13 33 1;
 equalDOF 13 43 1;
 equalDOF 13 53 1;
 
+set m1 11.95875
+set m2 11.95875
+set m3 12.94475
 
+set massFloorRaw {$m1 $m2 $m3}
+set massFloor []
+foreach  item $massFloorRaw {
+    lappend massFloor [expr $item*$kg*pow(10,4)]
+}
+set floor 1
 set totalBuildingMass 0
-# Assign Mass ------
-## Mass maybe not exactly correct but the frequency is correct so.....
-for {set floor 1} {$floor <= $NStory} {incr floor} {
-        if {$floor <= 2 } {
-            set massUsed [expr 1.195875000000000e+05*$kg];
-        } else {
-            set massUsed [expr 1.294475000000000e+05*$kg];
-        }
+
+if {[string equal $LunitTXT "mm"]} {
+    set alpha [expr pow(10,-12)]
+} elseif {[string equal $LunitTXT "meter"]} {
+    set alpha [expr pow(10,-6)]
+}
+
+foreach massAssignment $massFloor {
+        set floorCode $floor
+
         for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
             if {$Columns == 1 || $Columns == 5} {
-                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massUsed/(2*210)]
-                mass $Columns$floor [expr $massUsed/2] [expr $massUsed/2] [expr $rotationalMass]
-                #puts stdout "Mass at $Columns$floor defined as [expr $massUsed/2]"
-                set totalBuildingMass [expr $totalBuildingMass+$massUsed/2]
+                set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(2*210)]
+                mass $Columns$floorCode [expr $massAssignment/2] [expr $massAssignment/2]  $rotationalMass
+                #puts stdout "Mass at $Columns$floorCode defined as [expr $massAssignment/2] with Rotational Mass of $rotationalMass"
+                set totalBuildingMass [expr $totalBuildingMass+$massAssignment]
             } else {
-                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massUsed/(210)]
-                mass $Columns$floor [expr $massUsed]  $massUsed  $rotationalMass
-                #puts stdout "Mass at $Columns$floor defined as $massUsed"
-                set totalBuildingMass [expr $totalBuildingMass+$massUsed]
+                set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(210)]
+                mass $Columns$floorCode $massAssignment  $massAssignment $rotationalMass
+                #puts stdout "Mass at $Columns$floorCode defined as $massAssignment with Rotational Mass of $rotationalMass"
+                set totalBuildingMass [expr $totalBuildingMass+$massAssignment*2]
             }
 
         }
-    }
+        set floor [expr $floor + 1]
+}
 
 # RAYLEIGH damping parameters, Where to put M/K-prop damping, switches (http://opensees.berkeley.edu/OpenSees/manuals/usermanual/1099.htm)
 # D=$alphaM*M + $betaKcurr*Kcurrent + $betaKcomm*KlastCommit + $beatKinit*$Kinitial
@@ -152,26 +164,3 @@ set betaKcurr [expr $KcurrSwitch*2.*$xDamp/($omegaI+$omegaJ)];           # curre
 set betaKcomm [expr $KcommSwitch*2.*$xDamp/($omegaI+$omegaJ)];     # last-committed K;   +betaKcomm*KlastCommitt
 set betaKinit [expr $KinitSwitch*2.*$xDamp/($omegaI+$omegaJ)];            # initial-K;     +beatKinit*Kini
 rayleigh $alphaM $betaKcurr $betaKinit $betaKcomm;     # RAYLEIGH damping
-
-set DOF_MCK {
-{10 -1 -1 -1 }
-{11 30 31 32 }
-{12 27 28 29 }
-{13 22 23 24 }
-{20 -1 -1 -1 }
-{21 30 25 26 }
-{22 27 20 21 }
-{23 22 16 17 }
-{30 -1 -1 -1 }
-{31 30 18 19 }
-{32 27 14 15 }
-{33 22 10 11 }
-{40 -1 -1 -1 }
-{41 30 12 13 }
-{42 27 8 9 }
-{43 22 4 5 }
-{50 -1 -1 -1 }
-{51 30 6 7 }
-{52 27 2 3 }
-{53 22 0 1 }
-};

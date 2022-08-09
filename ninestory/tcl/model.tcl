@@ -166,39 +166,10 @@ foreach beamSection $beamList {
     set floor [expr $floor + 1]
 }
 
-# foreach beamSection $beamList {
-
-#     if {$floor < 10} {
-#         set floorCode "0$floor"
-#     } else {
-#         set floorCode $floor
-#     }
-
-#     for {set Columns 1 } {$Columns <= $NBay} {incr Columns} {
-#         set section  $beamSection
-#         set nodeI $Columns
-#         set nodeJ [expr $nodeI + 1]
-#         if {$nodeJ == 6} {
-#             # set W2144Area [expr 13.0*$inch*$inch]; 
-#             # set W2144xI  [expr 843*$inch*$inch*$inch*$inch];
-
-#            #element elasticBeamColumn  $nodeI$floorCode$nodeJ$floorCodeJ  $nodeI$floorCode $nodeJ$floorCodeJ  $W2144Area $W2144xI [expr 204000*$MPa] 2 -release 2;
-#            element elasticBeamColumn $nodeI$floorCode$nodeJ$floorCodeJ  $nodeI$floorCode $nodeJ$floorCodeJ $section $transformationKey;
-#            puts "Creating Elastic Beam with Section $section at node $nodeI$floorCode to $nodeJ$floorCodeJ"
-
-#         } else {
-#             element forceBeamColumn $nodeI$floorCode$nodeJ$floorCodeJ $nodeI$floorCode $nodeJ$floorCodeJ $transformationKey Lobatto $section $intPoint 
-#             puts "Creating Beam with Section $section at node $nodeI$floorCode to $nodeJ$floorCodeJ"
-
-#         }
-#     }
-#     set floor [expr $floor + 1]
-# }
-
-set massFloorRaw {9.65 10.1 9.89 9.89 9.89 9.89 9.89 9.89 9.89 10.7}
-set massFloor []
-foreach  item $massFloorRaw {
-    lappend massFloor [expr $item*$kg*pow(10,5)/(2*5)]
+if {[string equal $LunitTXT "mm"]} {
+    set alpha [expr pow(10,-12)]
+} elseif {[string equal $LunitTXT "meter"]} {
+    set alpha [expr pow(10,-6)]
 }
 
 set floor 1
@@ -211,12 +182,12 @@ foreach massAssignment $massFloor {
         }
         for {set Columns 1 } {$Columns <= $NBay+1} {incr Columns} {
             if {$Columns == 1 || $Columns == 6} {
-                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
+                set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(2*210)]
                 mass $Columns$floorCode [expr $massAssignment/2] [expr $massAssignment/2]  $rotationalMass
                 #puts stdout "Mass at $Columns$floorCode defined as [expr $massAssignment/2] with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment]
             } else {
-                set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(210)]
+                set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(210)]
                 mass $Columns$floorCode $massAssignment  $massAssignment $rotationalMass
                 #puts stdout "Mass at $Columns$floorCode defined as $massAssignment with Rotational Mass of $rotationalMass"
                 set totalBuildingMass [expr $totalBuildingMass+$massAssignment*2]
@@ -227,16 +198,15 @@ foreach massAssignment $massFloor {
 }
 #puts "Total building mass is $totalBuildingMass"
 
-# set massAssignment [lindex $massFloor 0]
-# set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(210)]
-# mass 200 0 0  $rotationalMass
-# mass 300 0 0  $rotationalMass
-# mass 400 0 0  $rotationalMass
-# mass 500 0 0  $rotationalMass
-# set rotationalMass [expr pow($LBeam,2)*pow(10,-6)*$massAssignment/(2*210)]
-# mass 100 0 0  $rotationalMass
-# mass 600 0 0  $rotationalMass
-
+set massAssignment [lindex $massFloor 0]
+set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(210)]
+mass 200 0 0  $rotationalMass
+mass 300 0 0  $rotationalMass
+mass 400 0 0  $rotationalMass
+mass 500 0 0  $rotationalMass
+set rotationalMass [expr pow($LBeam,2)*$alpha*$massAssignment/(2*210)]
+mass 100 0 0  $rotationalMass
+mass 600 0 0  $rotationalMass
 
 # RAYLEIGH damping parameters, Where to put M/K-prop damping, switches (http://opensees.berkeley.edu/OpenSees/manuals/usermanual/1099.htm)
 # D=$alphaM*M + $betaKcurr*Kcurrent + $betaKcomm*KlastCommit + $beatKinit*$Kinitial
